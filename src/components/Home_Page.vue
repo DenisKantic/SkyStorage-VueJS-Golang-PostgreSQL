@@ -1,6 +1,9 @@
 <template>
-  <MainNavbar />
-  <p>Test</p>
+  <v-app>
+    <v-layout>
+      <MainNavbar />
+    </v-layout>
+  </v-app>
 </template>
 
 <script lang="ts">
