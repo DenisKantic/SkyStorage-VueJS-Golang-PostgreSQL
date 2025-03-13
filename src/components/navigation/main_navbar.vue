@@ -11,7 +11,7 @@
 
     <v-divider></v-divider>
 
-    <v-list density="compact" color="primary" class="px-6" nav>
+    <v-list density="compact" color="primary" class="px-6 text-h5" nav>
       <v-list-item class="text-center">
         <v-btn color="primary" class="my-4"><v-icon>mdi-plus</v-icon>New</v-btn>
       </v-list-item>
@@ -34,9 +34,9 @@
         value="starred"
       ></v-list-item>
       <v-divider></v-divider>
-      <v-list-item prepend-icon="mdi-cloud" title="Storage"></v-list-item>
-      <v-progress-linear color="primary" height="10" model-value="20"></v-progress-linear>
-      <p class="text-left mt-2">8.35GB used of 40GB</p>
+      <v-list-item prepend-icon="mdi-database-outline" title="Storage"></v-list-item>
+      <v-progress-linear color="primary" height="10" model-value="25"></v-progress-linear>
+      <p class="text-left text-body-2 mt-2">8.35GB used of 40GB</p>
     </v-list>
   </v-navigation-drawer>
 
