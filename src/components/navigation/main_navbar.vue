@@ -33,6 +33,13 @@
         title="Starred"
         value="starred"
       ></v-list-item>
+      <v-list-item
+        to="/email"
+        style="color: black"
+        prepend-icon="mdi-email"
+        title="Email"
+        value="email"
+      ></v-list-item>
       <v-divider></v-divider>
       <v-list-item prepend-icon="mdi-database-outline" title="Storage"></v-list-item>
       <v-progress-linear color="primary" height="10" model-value="25"></v-progress-linear>
@@ -47,8 +54,6 @@
     >
     <v-spacer></v-spacer>
   </v-app-bar>
-
-  <!-- Main content -->
 </template>
 
 <script setup lang="ts">

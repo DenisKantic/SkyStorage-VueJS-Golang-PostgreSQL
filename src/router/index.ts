@@ -12,6 +12,14 @@ const routes = [
     },
     component: () => import('@/views/home_page/homePage.vue'),
   },
+  {
+    path: '/email',
+    name: 'email',
+    meta: {
+      title: 'Email',
+    },
+    component: () => import('@/views/email/email_system.vue'),
+  },
 ]
 
 const router = createRouter({
