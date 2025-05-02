@@ -3,9 +3,9 @@
   <v-navigation-drawer v-model="drawer" app>
     <v-list>
       <v-list-item
-        prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg"
-        subtitle="sandra_a88@gmailcom"
-        title="Sandra Adams"
+        prepend-icon="mdi-account"
+        subtitle="VortexDigitalSystems"
+        title="Denis"
       ></v-list-item>
     </v-list>
 

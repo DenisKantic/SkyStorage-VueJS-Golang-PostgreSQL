@@ -17,8 +17,18 @@ const routes = [
     name: 'email',
     meta: {
       title: 'Email',
+      requiresAuth: true,
     },
     component: () => import('@/views/email/email_system.vue'),
+  },
+  {
+    path: '/login',
+    name: 'login',
+    meta: {
+      title: 'Login',
+      requiresAuth: true,
+    },
+    component: () => import('@/views/login/login_screen.vue'),
   },
 ]
 
@@ -37,17 +47,17 @@ router.beforeEach(async (to, from, next) => {
     })
 
     if (response.status === 200) {
-      authStore.isAuthenticated = true
+      authStore.isLoggedIn = true
     } else {
-      authStore.isAuthenticated = false
+      authStore.isLoggedIn = false
     }
   } catch (err) {
-    authStore.isAuthenticated = false
+    authStore.isLoggedIn = false
     console.log('ERROR FOR TOKEN VALIDATION', err)
   }
 
   // If the route requires authentication and user is not authenticated, redirect
-  if (to.matched.some((record) => record.meta.requiresAuth) && !authStore.isAuthenticated) {
+  if (to.matched.some((record) => record.meta.requiresAuth) && !authStore.isLoggedIn) {
     next({ name: 'login' })
   } else {
     next()

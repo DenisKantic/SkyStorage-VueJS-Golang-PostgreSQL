@@ -21,7 +21,7 @@
         @click="validate_and_send"
         >Send</v-btn
       >
-      <v-btn color="red" variant="elevated">Cancel</v-btn>
+      <v-btn color="red" variant="elevated" @click="cancel_email">Cancel</v-btn>
     </v-card-actions>
   </v-card>
 
@@ -32,8 +32,10 @@
 import SnackbarNotification from '@/components/snackbar/snackbar_notification.vue'
 import { sendEmail } from '@/services/mail'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 //import { sendEmail } from '@/services/mail'
 
+const router = useRouter()
 const email = ref('')
 const subject = ref('')
 const email_text = ref('')
@@ -43,6 +45,10 @@ const message = ref('')
 const msg_color = ref('')
 const sendBtnLoading = ref(false)
 const cardLoading = ref(false)
+
+function cancel_email() {
+  router.push('/')
+}
 
 async function validate_and_send() {
   cardLoading.value = true
