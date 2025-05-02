@@ -1,5 +1,5 @@
 <template>
-  <v-card class="ma-10" variant="elevated">
+  <v-card class="ma-10" variant="elevated" :disabled="cardLoading" :loading="cardLoading">
     <v-card-title>Email</v-card-title>
     <v-card-subtitle
       >To:
@@ -13,7 +13,14 @@
     <v-textarea auto-grow class="px-5" v-model="email_text" variant="solo-filled"></v-textarea>
     <v-divider></v-divider>
     <v-card-actions class="float-right">
-      <v-btn color="primary" variant="outlined" @click="validate_and_send">Send</v-btn>
+      <v-btn
+        color="primary"
+        variant="outlined"
+        :disabled="sendBtnLoading"
+        :loading="sendBtnLoading"
+        @click="validate_and_send"
+        >Send</v-btn
+      >
       <v-btn color="red" variant="elevated">Cancel</v-btn>
     </v-card-actions>
   </v-card>
@@ -34,8 +41,13 @@ const open = ref(false)
 const title = ref('')
 const message = ref('')
 const msg_color = ref('')
+const sendBtnLoading = ref(false)
+const cardLoading = ref(false)
 
 async function validate_and_send() {
+  cardLoading.value = true
+  sendBtnLoading.value = true
+
   if (!email.value.trim() || !subject.value.trim() || !email_text.value.trim()) {
     console.log('VALIDATION FIRED')
     title.value = 'Error'
@@ -43,9 +55,12 @@ async function validate_and_send() {
     msg_color.value = '#547792'
     open.value = true
 
+    cardLoading.value = false
+    sendBtnLoading.value = false
     setTimeout(() => {
       open.value = false
     }, 2000)
+    return
   }
 
   console.log('payload', email, '', subject.value, '', email_text.value)
@@ -58,6 +73,8 @@ async function validate_and_send() {
 
     setTimeout(() => {
       open.value = false
+      cardLoading.value = false
+      sendBtnLoading.value = false
     }, 2000)
   } else {
     open.value = true
@@ -65,6 +82,8 @@ async function validate_and_send() {
     message.value = 'Error on frontend'
 
     setTimeout(() => {
+      cardLoading.value = false
+      sendBtnLoading.value = false
       open.value = false
     }, 2000)
   }

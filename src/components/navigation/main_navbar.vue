@@ -33,13 +33,22 @@
         title="Starred"
         value="starred"
       ></v-list-item>
+
+      <!-- Email Dropdown -->
+      <v-list-group value="email" prepend-icon="mdi-email">
+        <template #activator="{ props }">
+          <v-list-item v-bind="props" title="Email" />
+        </template>
+        <v-list-item to="/email" title="Send Email" />
+        <v-list-item to="/sent" title="Sent" />
+        <v-list-item to="/inbox" title="Inbox" />
+      </v-list-group>
       <v-list-item
-        to="/email"
-        prepend-icon="mdi-email"
-        title="Send Email"
-        value="email"
+        color="#BB3E00"
+        prepend-icon="mdi-account"
+        title="Logout"
+        value="logout"
       ></v-list-item>
-      <v-list-item to="/inbox" prepend-icon="mdi-mail" title="Inbox" value="inbox"></v-list-item>
       <v-divider></v-divider>
       <v-list-item prepend-icon="mdi-database-outline" title="Storage"></v-list-item>
       <v-progress-linear color="primary" height="10" model-value="25"></v-progress-linear>
