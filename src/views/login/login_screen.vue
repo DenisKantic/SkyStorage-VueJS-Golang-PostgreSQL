@@ -211,7 +211,7 @@ async function submit() {
   await authStore.login(username.value, password.value)
 
   if (authStore.isLoggedIn) {
-    router.push({ name: 'CreateReservation' })
+    router.push({ name: 'Home' })
   } else {
     alert('Login failed')
   }

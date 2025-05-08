@@ -4,9 +4,14 @@ import router from '@/router'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    isLoggedIn: document.cookie.includes('auth_token'),
+    isLoggedIn: false,
   }),
   actions: {
+    initializeAuth() {
+      const token = document.cookie.includes('auth_token')
+      console.log('token exists', token)
+      this.isLoggedIn = token
+    },
     async login(username: string, password: string) {
       try {
         const response = await axios.post(

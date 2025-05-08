@@ -47,6 +47,7 @@
         color="#BB3E00"
         prepend-icon="mdi-account"
         title="Logout"
+        @click="logout"
         value="logout"
       ></v-list-item>
       <v-divider></v-divider>
@@ -67,6 +68,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useAuthStore } from '@/stores/authStore'
 
+const { logout } = useAuthStore()
 const drawer = ref(true) // Controls sidebar visibility
 </script>

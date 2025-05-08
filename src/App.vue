@@ -8,8 +8,13 @@
 </template>
 
 <script lang="ts" setup>
+import { storeToRefs } from 'pinia'
 import Navbar from './components/navigation/main_navbar.vue'
 import { useAuthStore } from './stores/authStore'
 
-const { isLoggedIn } = useAuthStore()
+const authStore = useAuthStore()
+
+const { isLoggedIn } = storeToRefs(authStore)
+
+console.log('IS LOGGED IN', isLoggedIn)
 </script>
