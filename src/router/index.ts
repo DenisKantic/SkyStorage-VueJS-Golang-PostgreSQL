@@ -1,16 +1,33 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
-import axios from 'axios'
+import { storeToRefs } from 'pinia'
 
 const routes = [
   {
     path: '/',
-    name: 'home',
+    name: 'Home',
     meta: {
       title: 'Pocetna',
       requiresAuth: true,
     },
     component: () => import('@/views/home_page/homePage.vue'),
+  },
+  {
+    path: '/email',
+    name: 'email',
+    meta: {
+      title: 'Email',
+      requiresAuth: true,
+    },
+    component: () => import('@/views/email/email_system.vue'),
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    meta: {
+      title: 'Login',
+    },
+    component: () => import('@/views/login/login_screen.vue'),
   },
 ]
 
@@ -19,28 +36,13 @@ const router = createRouter({
   routes,
 })
 
-// Global navigation guard to update the document title and check authentication
-router.beforeEach(async (to, from, next) => {
-  const authStore = useAuthStore() // accessing store for storing global state if user is logged in
-  try {
-    // Always check authentication status (even for public routes)
-    const response = await axios.get(`/petapi/validate-token`, {
-      withCredentials: true,
-    })
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore()
+  const { isLoggedIn } = storeToRefs(authStore)
 
-    if (response.status === 200) {
-      authStore.isAuthenticated = true
-    } else {
-      authStore.isAuthenticated = false
-    }
-  } catch (err) {
-    authStore.isAuthenticated = false
-    console.log('ERROR FOR TOKEN VALIDATION', err)
-  }
-
-  // If the route requires authentication and user is not authenticated, redirect
-  if (to.matched.some((record) => record.meta.requiresAuth) && !authStore.isAuthenticated) {
-    next({ name: 'login' })
+  if (to.meta.requiresAuth && !isLoggedIn.value) {
+    console.log('Middleware not logged in')
+    next({ name: 'Login' })
   } else {
     next()
   }
