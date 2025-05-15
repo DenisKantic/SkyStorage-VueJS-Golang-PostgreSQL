@@ -13,25 +13,48 @@
 
     <v-list density="compact" color="primary" class="px-6 text-h5" nav>
       <v-list-item class="text-center">
-        <v-btn color="primary" class="my-4"><v-icon>mdi-plus</v-icon>New</v-btn>
+        <v-dialog max-width="50%">
+          <template v-slot:activator="{ props: activatorProps }">
+            <v-btn
+              v-bind="activatorProps"
+              color="primary"
+              class="my-4"
+              text="Open Dialog"
+              variant="flat"
+              ><v-icon>mdi-plus</v-icon>New</v-btn
+            >
+          </template>
+
+          <template v-slot:default="{ isActive }">
+            <v-card title="Upload a file">
+              <VFileUpload multiple clearable show-size />
+              <v-card-actions>
+                <v-spacer></v-spacer>
+
+                <v-btn color="primary" variant="flat">Upload</v-btn>
+                <v-btn
+                  text="Cancel"
+                  variant="elevated"
+                  color="red"
+                  @click="isActive.value = false"
+                ></v-btn>
+              </v-card-actions>
+            </v-card>
+          </template>
+        </v-dialog>
       </v-list-item>
       <v-list-item
         style="color: black"
         prepend-icon="mdi-folder"
         title="My Files"
         value="myfiles"
-      ></v-list-item>
-      <v-list-item
-        style="color: black"
-        prepend-icon="mdi-account-multiple"
-        title="Shared with me"
-        value="shared"
+        to="/"
       ></v-list-item>
       <v-list-item
         style="color: black"
         prepend-icon="mdi-star"
-        title="Starred"
-        value="starred"
+        title="Favorites"
+        value="favorites"
       ></v-list-item>
 
       <!-- Email Dropdown -->
@@ -59,14 +82,16 @@
 
   <!-- Top bar with hamburger menu -->
   <v-app-bar>
-    <v-toolbar-title @click="drawer = !drawer"
-      ><v-icon color="primary" class="mr-2">mdi-cloud-circle</v-icon>Sky Storage</v-toolbar-title
+    <v-toolbar-title @click="drawer = !drawer" class="cursor-pointer"
+      ><v-icon color="primary" class="mr-2 cursor-pointer">mdi-cloud-circle</v-icon>Sky
+      Storage</v-toolbar-title
     >
     <v-spacer></v-spacer>
   </v-app-bar>
 </template>
 
 <script setup lang="ts">
+import { VFileUpload } from 'vuetify/labs/VFileUpload'
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 
