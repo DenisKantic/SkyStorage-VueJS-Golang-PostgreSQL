@@ -58,7 +58,10 @@
 
         <v-data-table :headers="headers" :items="data_items" :search="search">
           <template v-slot:item.actions="{ item }">
-            <v-icon @click="deleteFile(item)" size="25" color="red">mdi-delete</v-icon>
+            <div class="d-flex items-center justify-start">
+              <v-icon @click="deleteFile(item)" size="25" color="red">mdi-delete</v-icon>
+              <v-icon size="25" class="ml-10 cursor-pointer" color="blue">mdi-download</v-icon>
+            </div>
           </template>
         </v-data-table>
       </v-card>
@@ -67,8 +70,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-
+import { onMounted, ref } from 'vue'
+import { getAllFiles } from '@/services/getAllFiles'
 // items list
 const items = ref([
   { title: 'Folders', icon: 'mdi-folder', color: 'gray' },
@@ -94,47 +97,27 @@ const headers = ref([
   { key: 'actions', title: 'Actions' },
 ])
 
-const data_items = ref([
+const data_items = ref<
   {
-    name: 'Document1.pdf',
-    id: 1,
-    type: 'PDF', // Type
-    uploaded: 'March 10, 2025', // Uploaded date
-    size: '1.2 MB', // File size
-  },
-  {
-    name: 'Image1.jpg',
-    id: 2,
-    type: 'Image', // Type
-    uploaded: 'March 5, 2025', // Uploaded date
-    size: '2.4 MB', // File size
-  },
-  {
-    name: 'Presentation.pptx',
-    id: 3,
-    type: 'PowerPoint', // Type
-    uploaded: 'March 1, 2025', // Uploaded date
-    size: '4.5 MB', // File size
-  },
-  {
-    name: 'Spreadsheet.xlsx',
-    id: 4,
-    type: 'Excel', // Type
-    uploaded: 'February 20, 2025', // Uploaded date
-    size: '3.3 MB', // File size
-  },
-  {
-    name: 'AudioFile.mp3',
-    id: 5,
-    type: 'Audio', // Type
-    uploaded: 'January 25, 2025', // Uploaded date
-    size: '5.6 MB', // File size
-  },
-])
+    id: number
+    name: string
+    type: string
+    uploaded: string
+    size: string
+    path: string
+  }[]
+>([])
 
 const deleteFile = (item: { id: number }) => {
   console.log('selected item', item.id)
 }
 
+onMounted(async () => {
+  try {
+    data_items.value = await getAllFiles()
+  } catch (err) {
+    console.error('Failed to load files', err)
+  }
+})
 // menu control
 </script>

@@ -31,8 +31,9 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
 
+                <v-btn color="primary" variant="flat">Upload</v-btn>
                 <v-btn
-                  text="Close"
+                  text="Cancel"
                   variant="elevated"
                   color="red"
                   @click="isActive.value = false"
