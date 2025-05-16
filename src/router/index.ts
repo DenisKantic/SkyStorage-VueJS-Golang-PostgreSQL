@@ -43,9 +43,15 @@ router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth && !isLoggedIn.value) {
     console.log('Middleware not logged in')
     next({ name: 'Login' })
-  } else {
-    next()
   }
+
+  if (to.name === 'Login' && isLoggedIn.value) {
+    console.log('User already logged in, redirecting to home')
+    return next({ name: 'Home' })
+  }
+
+  // otherwise proceed
+  next()
 })
 
 export default router
