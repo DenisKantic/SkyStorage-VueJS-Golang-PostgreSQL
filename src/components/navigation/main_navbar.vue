@@ -13,7 +13,7 @@
 
     <v-list density="compact" color="primary" class="px-6 text-h5" nav>
       <v-list-item class="text-center">
-        <v-dialog max-width="50%">
+        <v-dialog max-width="50%" v-model="dialogIsActive">
           <template v-slot:activator="{ props: activatorProps }">
             <v-btn
               v-bind="activatorProps"
@@ -26,19 +26,33 @@
           </template>
 
           <template v-slot:default="{ isActive }">
-            <v-card title="Upload a file">
-              <VFileUpload multiple clearable show-size />
+            <v-card :loading="isLoading" :disabled="isLoading" title="Upload a file">
+              <VFileUpload v-model="selectedFiles" multiple clearable show-size />
               <v-card-actions>
                 <v-spacer></v-spacer>
 
-                <v-btn color="primary" variant="flat">Upload</v-btn>
+                <v-btn :loading="isLoading" color="primary" @click="handleUpload" variant="flat"
+                  >Upload</v-btn
+                >
                 <v-btn
+                  :disabled="isLoading"
                   text="Cancel"
                   variant="elevated"
                   color="red"
                   @click="isActive.value = false"
                 ></v-btn>
               </v-card-actions>
+              <v-progress-linear
+                v-show="isLoading"
+                :model-value="uploadPercentage"
+                size="100"
+                height="30"
+                color="primary"
+                class="mt-5 bg-secondary text-white font-weight-bold"
+                :indeterminate="false"
+              >
+                <span>Uploading... {{ uploadPercentage }}%</span>
+              </v-progress-linear>
             </v-card>
           </template>
         </v-dialog>
@@ -75,8 +89,13 @@
       ></v-list-item>
       <v-divider></v-divider>
       <v-list-item prepend-icon="mdi-database-outline" title="Storage"></v-list-item>
-      <v-progress-linear color="primary" height="10" model-value="25"></v-progress-linear>
-      <p class="text-left text-body-2 mt-2">8.35GB used of 40GB</p>
+      <v-progress-linear
+        color="primary"
+        max="2"
+        height="5"
+        :model-value="folder_size"
+      ></v-progress-linear>
+      <p class="text-left text-body-2 mt-2">{{ folder_size }} used of 2GB</p>
     </v-list>
   </v-navigation-drawer>
 
@@ -92,9 +111,52 @@
 
 <script setup lang="ts">
 import { VFileUpload } from 'vuetify/labs/VFileUpload'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
+import { UploadFiles } from '@/services/uploadFiles'
+import { GetTotalSize } from '@/services/getTotalFolderSize'
+import { uploadPercentage } from '@/services/uploadFiles'
 
 const { logout } = useAuthStore()
 const drawer = ref(true) // Controls sidebar visibility
+const folder_size = ref(0)
+const dialogIsActive = ref(false)
+
+// storing uploaded files
+const selectedFiles = ref<File[]>([])
+
+// control of whole dialog when upload is doing
+const isLoading = ref(false)
+
+const handleUpload = async () => {
+  if (!selectedFiles.value.length) {
+    console.error('No files are selected')
+    return
+  }
+
+  isLoading.value = true
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 2000))
+
+    await UploadFiles(selectedFiles.value)
+    console.log('Files uploaded successfully')
+    GetTotalSize()
+    isLoading.value = false
+    selectedFiles.value = []
+
+    // closing the dialog
+    dialogIsActive.value = false
+  } catch (error) {
+    console.error('ERROR', error)
+    isLoading.value = false
+  }
+}
+
+onMounted(async () => {
+  try {
+    folder_size.value = await GetTotalSize()
+  } catch (error) {
+    console.error(error)
+  }
+})
 </script>

@@ -57,10 +57,19 @@
         </template>
 
         <v-data-table :headers="headers" :items="data_items" :search="search">
+          <template v-slot:item.name="{ item }">
+            <a
+              href="#"
+              @click.prevent="openFile(item.path)"
+              class="text-black font-weight-bold text-decoration-none"
+            >
+              {{ item.name }}
+            </a>
+          </template>
           <template v-slot:item.actions="{ item }">
-            <div class="d-flex items-center justify-start">
+            <div class="d-flex items-center justify-center">
               <v-icon @click="deleteFile(item)" size="25" color="red">mdi-delete</v-icon>
-              <v-icon size="25" class="ml-10 cursor-pointer" color="blue">mdi-download</v-icon>
+              <v-icon size="25" class="cursor-pointer ml-10" color="blue">mdi-download</v-icon>
             </div>
           </template>
         </v-data-table>
@@ -83,8 +92,14 @@ const items = ref([
 ])
 
 const search = ref('')
-
-const headers = ref([
+const headers = ref<
+  readonly {
+    readonly key: string
+    readonly title: string
+    readonly align?: 'start' | 'center' | 'end'
+    readonly sortable?: boolean
+  }[]
+>([
   {
     align: 'start',
     key: 'name',
@@ -94,8 +109,8 @@ const headers = ref([
   { key: 'type', title: 'Type' },
   { key: 'uploaded', title: 'Uploaded' },
   { key: 'size', title: 'File Size' },
-  { key: 'actions', title: 'Actions' },
-])
+  { key: 'actions', title: 'Actions', align: 'center' },
+] as const)
 
 const data_items = ref<
   {
@@ -111,6 +126,13 @@ const data_items = ref<
 const deleteFile = (item: { id: number }) => {
   console.log('selected item', item.id)
 }
+
+function openFile(path: string) {
+  const url = `http://localhost:8080/${path}`
+  window.open(url, '_blank', 'noopener,noreferrer')
+}
+
+//function downloadFile(path: string) {}
 
 onMounted(async () => {
   try {
