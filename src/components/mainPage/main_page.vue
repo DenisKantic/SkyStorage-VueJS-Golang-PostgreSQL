@@ -1,5 +1,10 @@
 <!-- eslint-disable vue/valid-v-slot -->
 <template>
+  <ConfirmDeleteDialog
+    v-model="showConfirmDelete"
+    :filename="fileToDelete"
+    @confirm="handleConfirmDelete"
+  />
   <v-main>
     <v-container class="pa-6 ma-0">
       <h1 class="pl-2 mb-5">My Drive</h1>
@@ -68,7 +73,7 @@
           </template>
           <template v-slot:item.actions="{ item }">
             <div class="d-flex items-center justify-center">
-              <v-icon @click="deleteFile(item)" size="25" color="red">mdi-delete</v-icon>
+              <v-icon @click="deleteFileItem(item)" size="25" color="red">mdi-delete</v-icon>
               <v-icon size="25" class="cursor-pointer ml-10" color="blue">mdi-download</v-icon>
             </div>
           </template>
@@ -80,7 +85,9 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import ConfirmDeleteDialog from '../global_components/confirm_delete_dialog.vue'
 import { getAllFiles } from '@/services/getAllFiles'
+import { deleteFile } from '@/services/deleteFile'
 // items list
 const items = ref([
   { title: 'Folders', icon: 'mdi-folder', color: 'gray' },
@@ -90,6 +97,9 @@ const items = ref([
   { title: 'Audio', icon: 'mdi-music', color: 'red' },
   { title: 'Archives (zip)', icon: 'mdi-zip-box', color: 'gray' },
 ])
+
+const showConfirmDelete = ref(false)
+const fileToDelete = ref('')
 
 const search = ref('')
 const headers = ref<
@@ -123,12 +133,23 @@ const data_items = ref<
   }[]
 >([])
 
-const deleteFile = (item: { id: number }) => {
-  console.log('selected item', item.id)
+const deleteFileItem = (item: { name: string }) => {
+  fileToDelete.value = item.name
+  showConfirmDelete.value = true
+}
+
+const handleConfirmDelete = async (filename: string) => {
+  try {
+    await deleteFile(filename)
+    data_items.value = await getAllFiles()
+  } catch (error) {
+    console.error('Failed to delete the file', error)
+  }
+  showConfirmDelete.value = false
 }
 
 function openFile(path: string) {
-  const url = `http://localhost:8080/${path}`
+  const url = `http://localhost:8080/uploads/${path}`
   window.open(url, '_blank', 'noopener,noreferrer')
 }
 
